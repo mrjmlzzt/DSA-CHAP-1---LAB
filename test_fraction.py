@@ -36,5 +36,11 @@ def rejects_zero_denominator():
         raise
     return "accepted"
 
-    
+check(1, "Fraction(2, 4) stored simplified", "1/2", lambda: Fraction(2, 4))
+check(2, "Fraction(6, 8) stored simplified", "3/4", lambda: Fraction(6, 8))
+check(3, "1/2 add 1/3", "5/6", lambda: Fraction(2, 4).add(Fraction(1, 3)))
+check(4, "1/2 equals 2/4", "True", lambda: Fraction(2, 4) == Fraction(1, 2))
+check(5, "zero denominator", "refused", rejects_zero_denominator)
+
+print(f"\n{passed} of {total} checks passing.")
     
