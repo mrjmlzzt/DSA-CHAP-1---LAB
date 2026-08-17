@@ -1,30 +1,40 @@
 from fraction import Fraction
 
-f1 = Fraction(2, 4)
-if str(f1) == "1/2":
-    print("pass Fraction(2, 4) stored simplified got 1/2")
-else:
-    print("fail Fraction(2, 4)")
+passed = 0
+total = 5
 
-f2 = Fraction(6, 8)
-if str(f2) == "3/4":
-    print("pass Fraction(6, 8) stored simplified got 3/4")
-else:
-    print("fail Fraction(6, 8)")
 
-try:
-    Fraction(1, 0)
-    print("fail zero denominator was accepted")
-except ValueError:
-    print("pass zero denominator got refused")
+def report(number, status, description, detail):
+    """Print one result line, aligned in four columns."""
+    print(f"{number}. {status:<16}{description:<34}{detail}")
 
-f3 = Fraction(1, 2)
-f4 = Fraction(1, 3)
-result = f3.add(f4)
 
-if str(result) == "5/6":
-    print("pass 1/2 add 1/3 got 5/6")
-else:
-    print("fail 1/2 add 1/3")
+def check(number, description, expected, produce):
+    """Run one check and print a single line for it."""
+    global passed
+    try:
+        actual = produce()
+    except NotImplementedError as missing:
+        report(number, "not written yet", description, str(missing))
+        return
+    except Exception as error:
+        report(number, "ERROR", description, f"{type(error).__name__}: {error}")
+        return
+    if str(actual) == str(expected):
+        passed += 1
+        report(number, "pass", description, f"got {actual}")
+    else:
+        report(number, "FAIL", description, f"expected {expected}, got {actual}")
+
+
+def rejects_zero_denominator():
+    try:
+        Fraction(1, 0)
+    except ValueError:
+        return "refused"
+    except NotImplementedError:
+        raise
+    return "accepted"
+
     
     
