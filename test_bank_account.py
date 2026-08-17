@@ -57,7 +57,7 @@ check(1, "a new account keeps its opening balance", 1000,
 check(2, "depositing 500 into 1000 gives 1500", 1500, after_deposit)
 check(3, "withdrawing 250 from 1000 gives 750", 750, after_withdraw)
 check(4, "the account prints owner and balance", "Juan: 1500.00",
-      lambda: BankAccount("Juan", 1500))
+      lambda: str(BankAccount("Juan", 1500)))
 check(5, "overdrawing is refused", "refused",
       refuses(lambda: BankAccount("Juan", 1000).withdraw(5000)))
 check(6, "a negative deposit is refused", "refused",
