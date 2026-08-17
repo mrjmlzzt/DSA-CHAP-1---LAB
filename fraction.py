@@ -15,6 +15,13 @@ class Fraction:
         n = self._numerator * other._denominator + other._numerator * self._denominator
         d = self._denominator * other._denominator
         return Fraction(n, d)
+    def multiply(self, other):
+        n = self._numerator * other._numerator
+        d = self._denominator * other._denominator
+        return Fraction(n, d)
 
     def __str__(self):
         return f"{self._numerator}/{self._denominator}"
+    def __eq__(self, other):
+        return (self._numerator == other._numerator and
+                self._denominator == other._denominator)
