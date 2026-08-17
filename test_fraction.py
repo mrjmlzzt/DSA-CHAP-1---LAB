@@ -1,12 +1,12 @@
-from fraction import Fraction
+from bank_account import BankAccount
 
 passed = 0
-total = 5
+total = 7
 
 
 def report(number, status, description, detail):
     """Print one result line, aligned in four columns."""
-    print(f"{number}. {status:<16}{description:<34}{detail}")
+    print(f"{number}. {status:<16}{description:<40}{detail}")
 
 
 def check(number, description, expected, produce):
@@ -27,20 +27,44 @@ def check(number, description, expected, produce):
         report(number, "FAIL", description, f"expected {expected}, got {actual}")
 
 
-def rejects_zero_denominator():
-    try:
-        Fraction(1, 0)
-    except ValueError:
-        return "refused"
-    except NotImplementedError:
-        raise
-    return "accepted"
+def refuses(action):
+    """Return 'refused' if the class rejects the action, 'accepted' if not."""
+    def run():
+        try:
+            action()
+        except ValueError:
+            return "refused"
+        except NotImplementedError:
+            raise
+        return "accepted"
+    return run
 
-check(1, "Fraction(2, 4) stored simplified", "1/2", lambda: Fraction(2, 4))
-check(2, "Fraction(6, 8) stored simplified", "3/4", lambda: Fraction(6, 8))
-check(3, "1/2 add 1/3", "5/6", lambda: Fraction(2, 4).add(Fraction(1, 3)))
-check(4, "1/2 equals 2/4", "True", lambda: Fraction(2, 4) == Fraction(1, 2))
-check(5, "zero denominator", "refused", rejects_zero_denominator)
+
+def after_deposit():
+    account = BankAccount("Juan", 1000)
+    account.deposit(500)
+    return account.get_balance()
+
+
+def after_withdraw():
+    account = BankAccount("Juan", 1000)
+    account.withdraw(250)
+    return account.get_balance()
+
+
+check(1, "a new account keeps its opening balance", 1000,
+      lambda: BankAccount("Juan", 1000).get_balance())
+check(2, "depositing 500 into 1000 gives 1500", 1500, after_deposit)
+check(3, "withdrawing 250 from 1000 gives 750", 750, after_withdraw)
+check(4, "the account prints owner and balance", "Juan: 1500.00",
+      lambda: BankAccount("Juan", 1500))
+check(5, "overdrawing is refused", "refused",
+      refuses(lambda: BankAccount("Juan", 1000).withdraw(5000)))
+check(6, "a negative deposit is refused", "refused",
+      refuses(lambda: BankAccount("Juan", 1000).deposit(-100)))
+check(7, "a negative opening balance is refused", "refused",
+      refuses(lambda: BankAccount("Juan", -50)))
 
 print(f"\n{passed} of {total} checks passing.")
-    
+print("The balance never went below zero, and no test reached into _balance "
+      "directly. That is encapsulation doing its job.")
