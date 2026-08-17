@@ -25,3 +25,4 @@ class Fraction:
     def __eq__(self, other):
         return (self._numerator == other._numerator and
                 self._denominator == other._denominator)
+
